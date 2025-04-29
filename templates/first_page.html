@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CONTRACTOR BILL</title>
+    <style>
+        body { font-family: Calibri, sans-serif; font-size: 9pt; margin: 0; }
+        .container { width: 180mm; min-height: 287mm; margin: 10mm 15mm; padding: 0; box-sizing: border-box; }
+        table { width: 100%; max-width: 180mm; border-collapse: collapse; table-layout: fixed; }
+        th, td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: top; overflow: hidden; }
+        .header { text-align: left; margin-bottom: 10px; }
+        .header p { margin: 2px 0; }
+        .bold { font-weight: bold; }
+        .underline { text-decoration: underline; }
+        .divider { font-weight: bold; text-decoration: underline; }
+        .center-align { text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>CONTRACTOR BILL</h2>
+            {% for row in data.header %}
+                {% if row|length > 0 %}
+                    <p>
+                        {% for item in row %}
+                            {% if item|trim %}
+                                {% set trimmed = item|trim %}
+                                {% if trimmed|length >= 10 and trimmed[4:5] == '-' and trimmed[7:8] == '-' and trimmed[:4]|int > 0 and trimmed[5:7]|int > 0 and trimmed[8:10]|int > 0 %}
+                                    {{ trimmed[8:10] }}/{{ trimmed[5:7] }}/{{ trimmed[:4] }}
+                                {% else %}
+                                    {{ trimmed }}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th width="10.10mm">Unit</th>
+                    <th width="13.81mm">Quantity executed (or supplied) since last certificate</th>
+                    <th width="13.81mm">Quantity executed (or supplied) upto date as per MB</th>
+                    <th width="9.58mm">Item No.</th>
+                    <th width="64.06mm">Item of Work supplies (Grouped under "sub-head" and "sub work" of estimate)</th>
+                    <th width="13.21mm">Rate</th>
+                    <th width="19.60mm">Amount upto date</th>
+                    <th width="15.20mm">Amount Since previous bill (Total for each sub-head)</th>
+                    <th width="12.00mm">Remark</th>              
+                </tr>
+            </thead>
+            <tbody>
+                {% if data.items %}                    
+                    {% for item in data['items'] %}
+                        {% if item.is_divider %}
+                            <tr>
+                                <td colspan="9" class="divider">{{ item.description }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ item.unit | default("") }}</td>
+                                <td>{{ item.quantity_since_last if item.quantity_since_last|trim else "" }}</td>
+                                <td>{{ item.quantity_upto_date if item.quantity_upto_date|trim else item.quantity if item.quantity|trim else "" }}</td>
+                                <td>{{ item.serial_no | default("") }}</td>
+                                <td class="{% if item.bold %}bold{% endif %} {% if item.underline %}underline{% endif %}">{{ item.description | default("") }}</td>
+                                <td>{{ item.rate | int if item.rate|trim else "" }}</td>
+                                <td>{{ item.amount | int if item.amount|trim else "" }}</td>
+                                <td>{{ item.amount_previous | int if item.amount_previous|trim else "" }}</td>
+                                <td>{{ item.remark | default("") }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="9">No items available</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td colspan="4"></td>
+                    <td>Grand Total</td>
+                    <td></td>
+                    <td>{{ data.totals.grand_total | int if data.totals.grand_total is not none else "" }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td>Tender Premium @ {{ "%.2f%%" | format(data.totals.premium.percent * 100) if data.totals.premium.percent is not none else "" }}</td>
+                    <td>{{ "%.2f%%" | format(data.totals.premium.percent * 100) if data.totals.premium.percent is not none else "" }}</td>
+                    <td>{{ data.totals.premium.amount | int if data.totals.premium.amount is not none else "" }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td>Total including Tender Premium</td>
+                    <td></td>
+                    <td>{{ data.totals.original_payable | int if data.totals.original_payable is not none else "" }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="center-align">{{ data.totals.extra_items_total | int if data.totals.extra_items_total is not none and data.totals.extra_items_total > 0 else "NIL" }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>Sum of Extra Items (including Tender Premium) (See on Left) Rs.</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td>Less Payment of last running Bill</td>
+                    <td></td>
+                    <td>{{ data.totals.amount_paid_last_bill | int if data.totals.amount_paid_last_bill is not none else "0" }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td>Payable Amount Rs.</td>
+                    <td></td>
+                    <td>{{ data.totals.payable | int if data.totals.payable is not none else "" }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

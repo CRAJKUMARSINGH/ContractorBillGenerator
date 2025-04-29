@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Note Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+            margin: 10mm;
+        }
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+        .container {
+            width: 190mm;
+            margin: 0 auto;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 10mm;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 4px 6px;
+            text-align: left;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+        .note-cell {
+            white-space: pre-wrap;
+        }
+        table th:nth-child(1), table td:nth-child(1) {
+            width: 10mm;
+        }
+        table th:nth-child(2), table td:nth-child(2) {
+            width: 80mm;
+        }
+        table th:nth-child(3), table td:nth-child(3) {
+            width: 90mm;
+        }
+        .no-border {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>NOTE SHEET</h2>
+            <p>Bill for Agreement No. {{ note_sheet_data.header.agreement_no | default("48/2024-25") }}</p>
+        </div>
+        <table>
+            <tbody>
+                <tr><td>1</td><td>Chargeable Head</td><td>8443-00-108-00-00</td></tr>
+                <tr><td>2</td><td>Agreement No.</td><td>{{ note_sheet_data.header.agreement_no | default("48/2024-25") }}</td></tr>
+                <tr><td>3</td><td>Adm. Section</td><td></td></tr>
+                <tr><td>4</td><td>Tech. Section</td><td></td></tr>
+                <tr><td>5</td><td>M.B No.</td><td>887/Pg. No. 04-20</td></tr>
+                <tr><td>6</td><td>Name of Sub Dn</td><td>Rajsamand</td></tr>
+                <tr><td>7</td><td>Name of Work</td><td>{{ note_sheet_data.header.name_of_work | default("Electric Repair and MTC work...") }}</td></tr>
+                <tr><td>8</td><td>Name of Firm</td><td>{{ note_sheet_data.header.name_of_firm | default("M/s Seema Electrical Udaipur") }}</td></tr>
+                <tr><td>9</td><td>Original/Deposit</td><td>Deposit</td></tr>
+                <tr><td>11</td><td>Date of Commencement</td><td>{{ note_sheet_data.header.date_commencement | default("09/01/2025") }}</td></tr>
+                <tr><td>12</td><td>Date of Completion</td><td>{{ note_sheet_data.header.date_completion | default("17/04/2025") }}</td></tr>
+                <tr><td>13</td><td>Actual Date of Completion</td><td>{{ note_sheet_data.header.actual_completion | default("01/03/2025") }}</td></tr>
+                <tr><td>14</td><td>In case of delay whether Provisional Extension Granted</td><td>{% if note_sheet_data.header.actual_completion and note_sheet_data.header.date_completion %}{% set delay_days = (note_sheet_data.header.actual_completion | strptime('%d/%m/%Y') - note_sheet_data.header.date_completion | strptime('%d/%m/%Y')).days %}{% if delay_days > 0 %}Yes. Time Extension sanctioned is enclosed proposing {{ delay_days }} days delay on part of the contractor and remaining on Govt. The case is to be approved by this office.{% else %}No delay.{% endif %}{% else %}Not specified.{% endif %}</td></tr>
+                <tr><td>15</td><td>Whether any notice issued</td><td></td></tr>
+                <tr><td>16</td><td>Amount of Work Order Rs.</td><td>{{ note_sheet_data.work_order_amount | default(854678) }}</td></tr>
+                <tr><td>17</td><td>Actual Expenditure up to this Bill Rs.</td><td>{{ note_sheet_data.totals.original_payable | default(0) }}</td></tr>
+                <tr><td>18</td><td>Balance to be done Rs.</td><td>{% if note_sheet_data.work_order_amount > note_sheet_data.totals.original_payable %}{{ note_sheet_data.work_order_amount - note_sheet_data.totals.original_payable }}{% else %}NIL{% endif %}</td></tr>
+                <tr><td></td><td>Net Amount of This Bill Rs.</td><td>{{ note_sheet_data.totals.original_payable | default(0) }}</td></tr>
+                <tr><td></td><td>Deductions:</td><td></td></tr>
+                <tr><td></td><td>S.D. @ 10%</td><td>{{ note_sheet_data.deductions.recovery_sd | default(0) }}</td></tr>
+                <tr><td></td><td>I.T. @ 2%</td><td>{{ note_sheet_data.deductions.recovery_it | default(0) }}</td></tr>
+                <tr><td></td><td>GST @ 2%</td><td>{{ note_sheet_data.deductions.recovery_gst | default(0) }}</td></tr>
+                <tr><td></td><td>L.C. @ 1%</td><td>{{ note_sheet_data.deductions.recovery_lc | default(0) }}</td></tr>
+                <tr><td></td><td>Dep-V</td><td>{{ note_sheet_data.deductions.recovery_deposit_v | default(0) }}</td></tr>
+                <tr><td></td><td>Liquidated Damages</td><td>{{ note_sheet_data.deductions.liquidated_damages | default(0) }}</td></tr>
+                <tr><td></td><td>Cheque</td><td>{{ note_sheet_data.deductions.by_cheque | default(0) }}</td></tr>
+                <tr><td></td><td>Total</td><td>{{ note_sheet_data.deductions.payment_now | default(0) }}</td></tr>
+                <tr><td colspan="3" class="note-cell">{{ note_sheet_data.notes | join('\n') if note_sheet_data.notes else 'No notes available' }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
