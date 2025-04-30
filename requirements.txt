@@ -1,0 +1,12 @@
+streamlit
+pandas
+numpy
+jinja2
+num2words
+python-docx
+reportlab
+xhtml2pdf
+wkhtmltopdf
+pypdf
+openpyxl
+pdfkit

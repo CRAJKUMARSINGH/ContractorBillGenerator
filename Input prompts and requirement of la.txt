@@ -1,0 +1,30 @@
+Input prompts and requirement of latest version is to be adopted Sir!
+
+
+Please note that the deviation statement is to be generated only in case of final bill.
+
+i have encountered error when input has no extra items. Please ensure program to tackle this.
+
+
+have u make the program to tackle inputs with or without extra items?
+
+
+
+the record room folder has set oif approved output of earlier version>>>>kindly see and help me integrate it in this app
+
+
+please directy the code to open upon run in firefox browser promptly
+
+
+C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe
+
+C:\Program Files (x86)\PDFtk\bin\pdftk.exe
+
+
+the error now is>>>>>>
+
+http://127.0.0.1:9999
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+I HAVE ADDED 4 TESTED FILES>>>>PLEASE DEBUG BY RUNNING ALL ONE BY ONE WITH UR ASSUMTIVE INPUT VARIABLES
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
