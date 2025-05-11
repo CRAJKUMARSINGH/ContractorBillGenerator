@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Sheet</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .section { margin-bottom: 20px; }
+        .section p { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>PUBLIC WORKS DEPARTMENT</h2>
+        <h3>Office of the Executive Engineer</h3>
+        <h4>Note Sheet</h4>
+    </div>
+
+    <div class="section">
+        <p><strong>Name of Work:</strong> Electric Repair and MTC work at Govt. Ambedkar Hostel, Ambamata, Govardhanvilas, Udaipur</p>
+        <p><strong>Contractor:</strong> M/s Seema Electrical Udaipur</p>
+        <p><strong>Agreement No.:</strong> 48/2024-25</p>
+        <p><strong>Chargeable Head:</strong> 8443-00-108-00-00</p>
+        <p><strong>M.B. No.:</strong> 887 Page No. 04 to 20</p>
+        <p><strong>Sub Division:</strong> Rajsamand</p>
+    </div>
+
+    <div class="section">
+        <p><strong>Date of Start:</strong> 09/01/2025 [Awaiting user input]</p>
+        <p><strong>Schedule Date of Completion:</strong> 17/04/2025 [Awaiting user input]</p>
+        <p><strong>Actual Date of Completion:</strong> 01/03/2025 [Awaiting user input]</p>
+        <p><strong>Delay:</strong> Completed 47 days early [Recalculated; to be updated with user input]</p>
+    </div>
+
+    <div class="section">
+        <p><strong>Work Order Amount:</strong> ₹854,678 [Awaiting user input]</p>
+        <p><strong>Tender Premium:</strong> 4% ABOVE [Awaiting user input]</p>
+        <p><strong>Actual Expenditure:</strong> ₹{{ note_sheet_data.totals.original_payable }} [Awaiting Excel data]</p>
+        <p><strong>Balance:</strong> ₹{{ 854678 - note_sheet_data.totals.original_payable }} [Awaiting Excel data]</p>
+    </div>
+
+    <div class="section">
+        <h3>Deductions</h3>
+        <table>
+            <tr><th>Item</th><th>Amount (₹)</th></tr>
+            <tr><td>S.D. 10%</td><td>{{ note_sheet_data.deductions.sd }} [Awaiting calculation]</td></tr>
+            <tr><td>I.T. 2%</td><td>{{ note_sheet_data.deductions.it }} [Awaiting calculation]</td></tr>
+            <tr><td>GST 2% (Rounded to even)</td><td>{{ note_sheet_data.deductions.gst }} [Awaiting calculation]</td></tr>
+            <tr><td>L.C. 1%</td><td>{{ note_sheet_data.deductions.lc }} [Awaiting calculation]</td></tr>
+            <tr><td>Deposit-V</td><td>{{ note_sheet_data.deductions.deposit_v }} [Awaiting Excel data]</td></tr>
+            <tr><td>Liquidated Damages</td><td>₹0 [No delay]</td></tr>
+            <tr><td><strong>Net Amount</strong></td><td>₹{{ note_sheet_data.totals.original_payable }} [Awaiting calculation]</td></tr>
+            <tr><td><strong>Cheque Amount</strong></td><td>₹{{ note_sheet_data.deductions.by_cheque }} [Awaiting calculation]</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <p><strong>Amount Paid Vide Earlier Bill:</strong> ₹0 [Awaiting user input]</p>
+        <p><strong>Remarks:</strong> First & Final Bill, completed early, no delay penalties applicable.</p>
+    </div>
+</body>
+</html>

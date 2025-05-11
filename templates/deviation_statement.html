@@ -5,50 +5,42 @@
     <title>Deviation Statement</title>
     <style>
         body {
+            font-family: Calibri, sans-serif;
+            font-size: 9pt;
             margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            font-size: 8pt;
         }
         .container {
-            margin: 14mm 14mm 10mm 14mm;
-            width: 267mm;
+            width: 200mm;
             min-height: 190mm;
+            margin: 20mm 10mm 10mm 12mm;
+            padding: 0;
             box-sizing: border-box;
-        }
-        .table-wrapper {
-            width: 100%;
-            overflow: hidden;
-            border: 0.026mm solid black;
         }
         table {
             width: 100%;
-            max-width: 267mm;
+            max-width: 200mm;
             border-collapse: collapse;
             table-layout: fixed;
-            margin: 0 auto;
-            margin-bottom: 15mm;
-            border: 0.026mm solid black;
         }
         th, td {
-            border: 0.026mm solid black;
-            padding: 0.6mm;
+            border: 1px solid black;
+            padding: 5px;
             text-align: left;
             vertical-align: top;
             overflow: hidden;
-        }
-        th {
-            font-weight: bold;
-            text-align: center;
-            vertical-align: middle;
+            height: auto;
+            box-sizing: border-box;
+            word-wrap: break-word;
         }
         .header {
             text-align: center;
-            margin-bottom: 10mm;
+            margin-bottom: 10px;
         }
         .description {
             text-align: justify;
             overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-all;
         }
     </style>
 </head>
@@ -67,8 +59,8 @@
         <table>
             <thead>
                 <tr>
-                    <th width="6mm">ITEM No.</th>
-                    <th width="95mm">Description</th>
+                    <th width="5mm">ITEM No.</th>
+                    <th width="90mm">Description</th>
                     <th width="10mm">Unit</th>
                     <th width="10mm">Qty as per Work Order</th>
                     <th width="10mm">Rate</th>
@@ -79,7 +71,7 @@
                     <th width="10mm">Excess Amt Rs.</th>
                     <th width="10mm">Saving Qty</th>
                     <th width="10mm">Saving Amt Rs.</th>
-                    <th width="46mm">REMARKS/ REASON.</th>
+                    <th width="40mm">REMARKS/ REASON.</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,17 +80,17 @@
                     {% for item in data['items'] %}
                         <tr>
                             <td>{{ item.serial_no | default("") }}</td>
-                            <td>{{ item.description | default("") }}</td>
+                            <td class="description">{{ item.description | default("") }}</td>
                             <td>{{ item.unit | default("") }}</td>
-                            <td>{{ item.qty_wo | default("") }}</td>
-                            <td>{{ item.rate | default("") }}</td>
-                            <td>{{ item.amt_wo | default("") }}</td>
-                            <td>{{ item.qty_bill | default("") }}</td>
-                            <td>{{ item.amt_bill | default("") }}</td>
-                            <td>{{ item.excess_qty | default("") }}</td>
-                            <td>{{ item.excess_amt | default("") }}</td>
-                            <td>{{ item.saving_qty | default("") }}</td>
-                            <td>{{ item.saving_amt | default("") }}</td>
+                            <td>{{ item.qty_wo if item.unit|trim else "" }}</td>
+                            <td>{{ item.rate if item.unit|trim else "" }}</td>
+                            <td>{{ item.amt_wo if item.unit|trim and item.rate|trim else "" }}</td>
+                            <td>{{ item.qty_bill if item.unit|trim else "" }}</td>
+                            <td>{{ item.amt_bill if item.unit|trim and item.rate|trim else "" }}</td>
+                            <td>{{ item.excess_qty if item.unit|trim else "" }}</td>
+                            <td>{{ item.excess_amt if item.unit|trim and item.rate|trim else "" }}</td>
+                            <td>{{ item.saving_qty if item.unit|trim else "" }}</td>
+                            <td>{{ item.saving_amt if item.unit|trim and item.rate|trim else "" }}</td>
                             <td>{{ item.remark | default("") }}</td>
                         </tr>
                     {% endfor %}
@@ -124,7 +116,7 @@
                     </tr>
                     <tr>
                         <td></td>
-                        <td>Add Tender Premium ({{ "%.2f%%" % (data.summary.premium.percent * 100) if data.summary.premium and data.summary.premium.percent is not none else "" }})</td>
+                        <td>Add Tender Premium ({{ "%.2f%%" % (data.summary.premium.percent * 100 if data.summary is defined and data.summary.premium.percent is not none else data.premium_percent * 100 if data.premium_percent is not none else "") }})</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -174,19 +166,22 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td>Percentage of Deviation %</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{ "%.2f%%" % ((data.summary.overall_excess / data.summary.work_order_total * 100) if data.summary.work_order_total else 0) }}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td colspan="8" style="text-align: center;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;"></td>
                     </tr>
                 {% else %}
                     <tr><td colspan="13">No summary data available</td></tr>

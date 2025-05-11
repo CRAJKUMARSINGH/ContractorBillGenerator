@@ -1,0 +1,24 @@
+these to be taken for all four input files>>>>
+
+Mandatory Inputs
+Work Order Amount ___ Rs 111111
+Tender Premium 4.11%
+above
+Is Bill First >>>no
+In bill Final >>>yes
+Amount paid vide last bill>>>11111
+date of start 01/01/2025
+date of completion  25/04/2025
+actual date of completion 27/08/2026
+
+
+Non-Mandatory Inputs>>>>keep blank if no input given
+
+Name of Work ---- Madhuban Niwas Construction work.
+Agency - M/s Bhajan Lal
+Work Order No. 786 dated 25/12/2024
+Date of work order
+Agreement No. 12/2034-25
+serial number of bill
+voucher number
+

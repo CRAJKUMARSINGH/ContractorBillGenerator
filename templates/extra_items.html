@@ -2,130 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>EXTRA ITEM SLIP</title>
+    <title>Extra Items</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            font-size: 8pt;
-        }
-        .container {
-            margin: 14mm 14mm 10mm 14mm;
-            width: 182mm;
-            min-height: 287mm;
-            box-sizing: border-box;
-        }
-        .table-wrapper {
-            width: 100%;
-            overflow: hidden;
-            border: 0.026mm solid black;
-        }
-        table {
-            width: 100%;
-            max-width: 182mm;
-            border-collapse: collapse;
-            table-layout: fixed;
-            margin: 0 auto;
-            margin-bottom: 15mm;
-            border: 0.026mm solid black;
-        }
-        th, td {
-            border: 0.026mm solid black;
-            padding: 0.6mm;
-            text-align: left;
-            vertical-align: top;
-            overflow: hidden;
-        }
-        th {
-            font-weight: bold;
-            text-align: center;
-            vertical-align: middle;
-        }
-        .header {
-            text-align: left;
-            margin-bottom: 10mm;
-        }
-        .header p {
-            margin: 2mm 0;
-        }
-        .bold {
-            font-weight: bold;
-        }
-        .underline {
-            text-decoration: underline;
-        }
-        .center-align {
-            text-align: center;
-        }
-        .description {
-            text-align: justify;
-            overflow-wrap: break-word;
-        }
+        body { font-family: Calibri, sans-serif; font-size: 9pt; margin: 0; }
+        .container { width: 190mm; min-height: 287mm; margin: 10mm auto; padding: 10mm; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 5px; text-align: left; }
+        .header { text-align: center; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h2>EXTRA ITEM SLIP</h2>
-            <p>Name of Work: {{ data.header[1][1] if data.header and data.header|length > 1 and data.header[1]|length > 1 and data.header[1][1] else "N/A" }}</p>
-            <p>Bill Number: {{ data.header[0][1] if data.header and data.header|length > 0 and data.header[0]|length > 1 and data.header[0][1] else "N/A" }}</p>
-            <p>Agency Name: {{ data.header[2][1] if data.header and data.header|length > 2 and data.header[2]|length > 1 and data.header[2][1] else "N/A" }}</p>
+            <h2>Extra Items</h2>
         </div>
         <table>
             <thead>
                 <tr>
-                    <th style="width: 10.06mm;">Unit</th>
-                    <th style="width: 13.76mm;">Quantity executed (or supplied) since last certificate</th>
-                    <th style="width: 13.76mm;">Quantity executed (or supplied) upto date as per MB</th>
-                    <th style="width: 9.55mm;">Item No.</th>
-                    <th style="width: 63.83mm;">Item of Work supplies (Grouped under "sub-head" and "sub work" of estimate)</th>
-                    <th style="width: 13.16mm;">Rate</th>
-                    <th style="width: 19.53mm;">Amount upto date</th>
-                    <th style="width: 15.15mm;">Amount Since previous bill (Total for each sub-head)</th>
-                    <th style="width: 11.96mm;">Remark</th>
+                    <th>Serial No.</th>
+                    <th>Remark</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
-                {% for item in data['items'] %}
+                {% for item in data["items"] %}
                     <tr>
-                        <td style="width: 10.06mm;">{{ item.unit | default("") }}</td>
-                        <td style="width: 13.76mm;">{{ item.quantity_since_last if item.quantity_since_last|trim else "" }}</td>
-                        <td style="width: 13.76mm;">{{ item.quantity_upto_date if item.quantity_upto_date|trim else item.quantity if item.quantity|trim else "" }}</td>
-                        <td style="width: 9.55mm;">{{ item.serial_no | default("") }}</td>
-                        <td class="description" style="width: 63.83mm;{% if item.bold %} font-weight: bold;{% endif %} {% if item.underline %} text-decoration: underline;{% endif %}">{{ item.description | default("") }}</td>
-                        <td style="width: 13.16mm;">{{ item.rate | int if item.rate|trim else "" }}</td>
-                        <td style="width: 19.53mm;">{{ item.amount | int if item.amount|trim else "" }}</td>
-                        <td style="width: 15.15mm;">{{ item.amount_previous | int if item.amount_previous|trim else "" }}</td>
-                        <td style="width: 11.96mm;">{{ item.remark | default("") }}</td>
+                        <td>{{ item.serial_no | default("") }}</td>
+                        <td>{{ item.remark | default("") }}</td>
+                        <td>{{ item.description | default("") }}</td>
+                        <td>{{ item.quantity | default("") }}</td>
+                        <td>{{ item.unit | default("") }}</td>
+                        <td>{{ item.rate | default("") }}</td>
+                        <td>{{ item.amount | default("") }}</td>
                     </tr>
                 {% endfor %}
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Grand Total</td>
-                    <td></td>
-                    <td>{{ data.totals.grand_total | int if data.totals.grand_total is not none else "" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Tender Premium @ {{ "%.2f%%" | format(data.totals.premium.percent * 100) if data.totals.premium.percent is not none else "" }}</td>
-                    <td>{{ "%.2f%%" | format(data.totals.premium.percent * 100) if data.totals.premium.percent is not none else "" }}</td>
-                    <td>{{ data.totals.premium.amount | int if data.totals.premium.amount is not none else "" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Total including Tender Premium</td>
-                    <td></td>
-                    <td>{{ data.totals.payable | int if data.totals.payable is not none else "" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
             </tbody>
         </table>
     </div>
 </body>
 </html>
+{% macro format_percent(value) %}
+    {{ "{:.2%}".format(value) if value is not none else "" }}
+{% endmacro %}

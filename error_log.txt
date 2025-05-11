@@ -1,0 +1,17 @@
+
+2025-05-12 02:40:19.913062: Error processing bill: generate_pdf() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "C:\Users\Rajkumar\ContractorBillGenerator\app.py", line 705, in handle_form_submission
+    future.result()
+    ~~~~~~~~~~~~~^^
+  File "C:\Users\Rajkumar\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Rajkumar\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\Rajkumar\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+TypeError: generate_pdf() takes 2 positional arguments but 3 were given
+
+
+

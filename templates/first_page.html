@@ -11,22 +11,36 @@
             font-size: 8pt;
         }
         .container {
-            margin: 14mm 14mm 10mm 14mm;
-            width: 182mm;
+            margin: 14mm 10mm 10mm 12mm;
+            width: 200mm;
             min-height: 287mm;
             box-sizing: border-box;
         }
         .header {
-            text-align: left;
+            width: 100%;
             margin-bottom: 10mm;
         }
-        .header p {
-            margin: 2mm 0;
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2mm;
+        }
+        .header-table th, .header-table td {
+            border: 1px solid black;
+            padding: 2mm;
+            font-size: 8pt;
+        }
+        .header-table th {
+            background-color: #f0f0f0;
         }
         .table-wrapper {
             width: 100%;
             overflow: hidden;
-            border: 0.026mm solid black;
+            border: 1px solid black;
+            border-width: 1px;
+            border-style: solid;
+            border-color: black;
+            box-sizing: border-box;
         }
         table {
             width: 100%;
@@ -34,24 +48,34 @@
             table-layout: fixed;
             margin: 0 auto;
             margin-bottom: 15mm;
-            border: 0.026mm solid black;
+            border: 1px solid black;
+            border-width: 1px;
+            border-style: solid;
+            border-color: black;
         }
         th, td {
-            border: 0.026mm solid black;
-            padding: 0.6mm;
+            border: 1px solid black;
+            border-width: 1px;
+            border-style: solid;
+            border-color: black;
+            padding: 2mm;
             font-size: 8pt;
             vertical-align: top;
-            height: 18mm;
+            height: auto;
+            box-sizing: border-box;
+            word-wrap: break-word;
         }
         th {
             font-size: 7pt;
             text-align: center;
             vertical-align: middle;
-            height: 15mm;
+            height: auto;
         }
         .description {
             text-align: justify;
             overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-all;
         }
         .bold {
             font-weight: bold;
@@ -65,22 +89,25 @@
     <div class="container">
         <div class="header">
             <h2>CONTRACTOR BILL</h2>
-            {% for row in data.header %}
-                {% if row|length > 0 %}
-                    <p>
-                        {% for item in row %}
-                            {% if item|trim %}
-                                {% set trimmed = item|trim %}
-                                {% if trimmed|length >= 10 and trimmed[4:5] == '-' and trimmed[7:8] == '-' and trimmed[:4]|int > 0 and trimmed[5:7]|int > 0 and trimmed[8:10]|int > 0 %}
-                                    {{ trimmed[8:10] }}/{{ trimmed[5:7] }}/{{ trimmed[:4] }}
-                                {% else %}
-                                    {{ trimmed }}
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </p>
-                {% endif %}
-            {% endfor %}
+            <p style="text-align: center; margin: 5mm 0; font-size: 8pt; font-weight: bold;">
+                FOR CONTRACTORS & SUPPLIERS ONLY FOR PAYMENT FOR WORK OR SUPPLIES ACTUALLY MEASURED WORK ORDER
+            </p>
+            <table class="header-table">
+                <tr>
+                    <th>Sl No.</th>
+                    <th>Particulars</th>
+                    <th>Details</th>
+                </tr>
+                {% for row in data.header %}
+                    {% if row|length > 0 %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
         </div>
         <div class="table-wrapper">
             <table>
@@ -89,12 +116,12 @@
                         <th style="width: 10.06mm;">Unit</th>
                         <th style="width: 13.76mm;">Quantity executed (or supplied) since last certificate</th>
                         <th style="width: 13.76mm;">Quantity executed (or supplied) upto date as per MB</th>
-                        <th style="width: 9.55mm;">Item No.</th>
+                        <th style="width: 9.55mm;">S. No.</th>
                         <th style="width: 63.83mm;">Item of Work supplies (Grouped under "sub-head" and "sub work" of estimate)</th>
                         <th style="width: 13.16mm;">Rate</th>
-                        <th style="width: 19.53mm;">Amount upto date</th>
-                        <th style="width: 15.15mm;">Amount Since previous bill (Total for each sub-head)</th>
-                        <th style="width: 11.96mm;">Remark</th>
+                        <th style="width: 16.53mm;">Upto date Amount</th>
+                        <th style="width: 12.15mm;">Amount Since previous bill (Total for each sub-head)</th>
+                        <th style="width: 11.96mm;">Remarks</th>
                     </tr>
                     <tr>
                         <th>1</th>
@@ -108,85 +135,77 @@
                         <th>9</th>
                     </tr>
                 </thead>
-            <tbody>
-                {% if items %}                    
-                    {% for item in items %}
-                        {% if item.is_divider %}
-                            <tr>
-                                <td colspan="9" class="divider">{{ item.description }}</td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td style="width: 10.06mm;">{{ item.unit | default("") }}</td>
-                                <td style="width: 13.76mm;">{{ item.quantity_since_last if item.quantity_since_last|trim else "" }}</td>
-                                <td style="width: 13.76mm;">{{ item.quantity_upto_date if item.quantity_upto_date|trim else item.quantity if item.quantity|trim else "" }}</td>
-                                <td style="width: 9.55mm;">{{ item.serial_no | default("") }}</td>
-                                <td class="description" style="width: 63.83mm;{% if item.bold %} font-weight: bold;{% endif %} {% if item.underline %} text-decoration: underline;{% endif %}">{{ item.description | default("") }}</td>
-                                <td style="width: 13.16mm;">{{ item.rate | int if item.rate|trim else "" }}</td>
-                                <td style="width: 19.53mm;">{{ item.amount | int if item.amount|trim else "" }}</td>
-                                <td style="width: 15.15mm;">{{ item.amount_previous | int if item.amount_previous|trim else "" }}</td>
-                                <td style="width: 11.96mm;">{{ item.remark | default("") }}</td>
-                            </tr>
-                        {% endif %}
+                <tbody>
+                    {% for item in data["items"] %}
+                        <tr>
+                            <td style="width: 10.06mm;">{{ item.unit | default("") }}</td>
+                            <td style="width: 13.76mm;">{{ item.quantity_since_last | default("") }}</td>
+                            <td style="width: 13.76mm;">{{ item.quantity_upto_date | default(item.quantity | default("") if item.unit|trim else "") }}</td>
+                            <td style="width: 9.55mm;">{{ item.serial_no | default("") }}</td>
+                            <td class="description" style="width: 63.83mm;{% if item.bold %} font-weight: bold;{% endif %} {% if item.underline %} text-decoration: underline;{% endif %}">{{ item.description | default("") }}</td>
+                            <td style="width: 13.16mm;">{{ item.rate | default("") }}</td>
+                            <td style="width: 16.53mm;">{{ item.amount | default("") }}</td>
+                            <td style="width: 12.15mm;">{{ item.amount_previous | default("") }}</td>
+                            <td style="width: 11.96mm;">{{ item.remark | default("") }}</td>
+                        </tr>
                     {% endfor %}
-                {% else %}
                     <tr>
-                        <td colspan="9">No items available</td>
+                        <td colspan="4"></td>
+                        <td>Total</td>
+                        <td></td>
+                        <td>{{ data.totals.grand_total | default("") }}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
-                {% endif %}
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Grand Total</td>
-                    <td></td>
-                    <td>{{ totals.grand_total | int if totals.grand_total is not none else "" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Tender Premium @ {{ "%.2f%%" | format(data.totals.premium.percent * 100) if data.totals.premium.percent is not none else "" }}</td>
-                    <td>{{ "%.2f%%" | format(data.totals.premium.percent * 100) if data.totals.premium.percent is not none else "" }}</td>
-                    <td>{{ data.totals.premium.amount | int if data.totals.premium.amount is not none else "" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Total including Tender Premium</td>
-                    <td></td>
-                    <td>{{ data.totals.original_payable | int if data.totals.original_payable is not none else "" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="center-align">{{ data.totals.extra_items_total | int if data.totals.extra_items_total is not none and data.totals.extra_items_total > 0 else "NIL" }}</td>
-                    <td></td>
-                    <td></td>
-                    <td>Sum of Extra Items (including Tender Premium) (See on Left) Rs.</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Less Payment of last running Bill</td>
-                    <td></td>
-                    <td>{{ data.totals.amount_paid_last_bill | int if data.totals.amount_paid_last_bill is not none else "0" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                    <td>Payable Amount Rs.</td>
-                    <td></td>
-                    <td>{{ data.totals.payable | int if data.totals.payable is not none else "" }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Premium @ {{ "%.2f%%" | format(data.totals.premium.percent * 100) if data.totals.premium and data.totals.premium.percent is not none else "" }}</td>
+                        <td></td>
+                        <td>{{ data.totals.premium.amount | int if data.totals.premium and data.totals.premium.amount is not none else "" }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total Including Premium</td>
+                        <td></td>
+                        <td>{{ data.totals.grand_total | int if data.totals.grand_total is not none else "" }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>Grand Total</td>
+                        <td></td>
+                        <td>{{ data.totals.grand_total | default(0) + data.totals.premium.amount | default(0) }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>Deduction (Amount Paid in Last Bill)</td>
+                        <td></td>
+                        <td>-{{ data.amount_paid_last_bill | default(0) }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>Net Payable Amount</td>
+                        <td></td>
+                        <td>{{ data.totals.grand_total | default(0) + data.totals.premium.amount | default(0) - data.amount_paid_last_bill | default(0) }}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

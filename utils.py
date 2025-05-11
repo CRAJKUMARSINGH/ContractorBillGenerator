@@ -14,13 +14,19 @@ import pdfkit
 from pypdf import PdfReader, PdfWriter
 import tempfile
 import shutil
+import subprocess
 
 # Initialize Jinja2 environment
 env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")), cache_size=0)
 env.filters['strptime'] = lambda s, fmt: datetime.strptime(s, fmt) if s else None
 
-# Configure wkhtmltopdf
+# Configure wkhtmltopdf with better error handling
 wkhtmltopdf_path = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+
+# Check if wkhtmltopdf exists
+if not os.path.exists(wkhtmltopdf_path):
+    raise FileNotFoundError(f"wkhtmltopdf not found at: {wkhtmltopdf_path}")
+
 config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
 
 def number_to_words(number):
@@ -143,9 +149,10 @@ def process_bill(ws_wo, ws_bq, ws_extra, premium_percent, premium_type, amount_p
             "items": [],
             "totals": {
                 "work_order_total": 0,
-                "premium_percent": premium_percent,
-                "premium_type": premium_type,
-                "premium_amount": 0,
+                "premium": {
+                    "percent": premium_percent,
+                    "amount": 0
+                },
                 "bill_amount": 0,
                 "grand_total": 0
             }
@@ -322,13 +329,19 @@ def process_bill(ws_wo, ws_bq, ws_extra, premium_percent, premium_type, amount_p
         # Calculate totals
         first_page_data["totals"]["bill_amount"] = work_order_total
         
+        # Initialize premium structure
+        first_page_data["totals"]["premium"] = {
+            "percent": premium_percent,
+            "amount": 0
+        }
+        
         # Calculate premium if applicable
         if premium_percent > 0:
             if premium_type == "Fixed":
-                first_page_data["totals"]["premium_amount"] = int(premium_percent)
+                first_page_data["totals"]["premium"]["amount"] = int(premium_percent)
             else:
-                first_page_data["totals"]["premium_amount"] = int(round((premium_percent / 100) * work_order_total))
-            first_page_data["totals"]["bill_amount"] = int(first_page_data["totals"]["bill_amount"] + first_page_data["totals"]["premium_amount"])
+                first_page_data["totals"]["premium"]["amount"] = int(round((premium_percent / 100) * work_order_total))
+            first_page_data["totals"]["bill_amount"] = int(first_page_data["totals"]["bill_amount"] + first_page_data["totals"]["premium"]["amount"])
         
         first_page_data["totals"]["grand_total"] = first_page_data["totals"]["bill_amount"]
         
@@ -361,7 +374,7 @@ def process_bill(ws_wo, ws_bq, ws_extra, premium_percent, premium_type, amount_p
             deviation_data["summary"]["bill_amount"] = first_page_data["totals"]["bill_amount"]
             deviation_data["summary"]["premium_percent"] = premium_percent
             deviation_data["summary"]["premium_type"] = premium_type
-            deviation_data["summary"]["premium_amount"] = first_page_data["totals"]["premium_amount"]
+            deviation_data["summary"]["premium_amount"] = first_page_data["totals"]["premium"]["amount"]
             
             # Calculate overall deviation
             deviation_data["summary"]["total_deviation"] = first_page_data["totals"]["bill_amount"] - work_order_total
@@ -418,48 +431,135 @@ def generate_bill_notes(payable_amount, work_order_amount, extra_item_amount, no
         st.error(f"Error generating note sheet: {str(e)}")
         return None
 
-def generate_pdf(sheet_name, data, orientation, output_path, note_sheet_data=None, header_data=None):
+def generate_pdf(html_content, output_path=None):
     """
-    Generate PDF document from template.
+    Generate PDF from HTML content
     
     Args:
-        sheet_name: Name of the sheet/template
-        data: Dictionary containing data for template
-        orientation: Page orientation ("portrait" or "landscape")
-        output_path: Path to save the PDF
-        note_sheet_data: Optional note sheet data
-        header_data: Optional header data
+        html_content: HTML content as string
+        output_path: Optional output path for the PDF
     """
     try:
-        # Get template
-        template = env.get_template(f"{sheet_name}.html")
-        
-        # Prepare data for template
-        template_data = {
-            'data': data,
-            'date': datetime.now().strftime('%d-%m-%Y'),
-            'orientation': orientation,
-            'note_sheet_data': note_sheet_data,
-            'header_data': header_data
-        }
-        
-        # Render HTML
-        html_content = template.render(template_data)
-        
-        # Create temporary HTML file
-        temp_html = os.path.join(os.path.dirname(output_path), f"{sheet_name}.html")
-        with open(temp_html, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-        
-        # Convert HTML to PDF
-        pdfkit.from_file(temp_html, output_path, configuration=config)
-        
-        # Clean up temporary HTML
-        os.remove(temp_html)
-        
+        # Create temporary directory for PDF generation
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create temporary HTML file
+            temp_html = os.path.join(temp_dir, "temp.html")
+            with open(temp_html, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            
+            # Try to find wkhtmltopdf in common locations
+            possible_paths = [
+                r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe",
+                r"C:\Program Files (x86)\wkhtmltopdf\bin\wkhtmltopdf.exe",
+                r"C:\Program Files\wkhtmltopdf\wkhtmltopdf.exe",
+                r"C:\Program Files (x86)\wkhtmltopdf\wkhtmltopdf.exe"
+            ]
+            
+            wkhtmltopdf_path = None
+            for path in possible_paths:
+                if os.path.exists(path):
+                    wkhtmltopdf_path = path
+                    break
+            
+            if not wkhtmltopdf_path:
+                raise FileNotFoundError("wkhtmltopdf executable not found. Please install it from: https://wkhtmltopdf.org/downloads.html")
+            
+            # Configure wkhtmltopdf
+            config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
+            
+            # Generate PDF
+            pdf_bytes = pdfkit.from_file(
+                temp_html,
+                False,  # Output to BytesIO
+                configuration=config,
+                options={
+                    'page-size': 'A4',
+                    'margin-top': '0.25in',
+                    'margin-bottom': '0.25in',
+                    'margin-left': '0.25in',
+                    'margin-right': '0.5in',
+                    'encoding': "UTF-8",
+                    'quiet': "",
+                    'no-outline': None,
+                    'enable-local-file-access': None,
+                    'disable-smart-shrinking': None,
+                    'dpi': 300,
+                    'javascript-delay': "1000",
+                    'no-stop-slow-scripts': None,
+                    'load-error-handling': "ignore"
+                }
+            )
+            
+            # If output_path is provided, write to file
+            if output_path:
+                with open(output_path, 'wb') as f:
+                    f.write(pdf_bytes)
+                return None
+            
+            # Return BytesIO object
+            return io.BytesIO(pdf_bytes)
+            
     except Exception as e:
-        st.error(f"Error generating PDF for {sheet_name}: {str(e)}")
+        error_msg = f"Error generating PDF: {str(e)}"
+        print(f"Error details: {traceback.format_exc()}")
+        raise ValueError(error_msg) from e
+
+def combine_pdfs(pdf_paths, output_path):
+    """
+    Combine multiple PDFs into one.
+    
+    Args:
+        pdf_paths: List of paths to PDF files
+        output_path: Path where combined PDF should be saved
+    """
+    try:
+        # Validate output path
+        if not output_path:
+            raise ValueError("Output path cannot be empty")
+        
+        # Validate PDF paths
+        if not pdf_paths:
+            raise ValueError("No PDFs to combine")
+        
+        # Create temporary directory for PDFs
+        temp_dir = tempfile.mkdtemp()
+        
+        try:
+            # Combine PDFs using pdftk
+            cmd = [
+                "pdftk",
+                *pdf_paths,
+                "cat",
+                "output",
+                output_path
+            ]
+            
+            try:
+                result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            except subprocess.CalledProcessError as e:
+                raise RuntimeError(f"Error combining PDFs: {e.stderr}\nCommand: {' '.join(cmd)}")
+            except FileNotFoundError:
+                raise RuntimeError("pdftk executable not found. Please install it from https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/")
+            
+            # Verify PDF was created
+            if not os.path.exists(output_path):
+                raise IOError(f"Failed to create combined PDF: {output_path}")
+                
+            # Verify PDF size (should be at least 1KB)
+            if os.path.getsize(output_path) < 1024:
+                raise IOError(f"Generated combined PDF is too small: {output_path}")
+                
+            return True
+            
+        finally:
+            # Clean up temporary files
+            if os.path.exists(temp_dir):
+                os.rmdir(temp_dir)
+                
+    except Exception as e:
+        print(f"Error in combine_pdfs: {str(e)}")
         print(f"Full traceback: {traceback.format_exc()}")
+        return False
 
 def create_word_doc(sheet_name, data, doc_path, header_data=None):
     """
