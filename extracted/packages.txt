@@ -1,0 +1,4 @@
+<DOCUMENT filename="packages.txt">
+wkhtmltopdf
+# Note: Install wkhtmltopdf manually (e.g., 'apt-get install wkhtmltopdf' on Ubuntu or download binary for Windows)
+</DOCUMENT>

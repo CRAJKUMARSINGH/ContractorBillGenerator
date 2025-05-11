@@ -5,14 +5,17 @@
     <title>Memorandum of Payments</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
             font-size: 8pt;
-            margin: 10mm;
         }
 
-        @page {
-            size: A4 portrait;
-            margin: 10mm;
+        .container {
+            margin: 14mm 14mm 10mm 14mm;
+            width: 182mm;
+            min-height: 287mm;
+            box-sizing: border-box;
         }
 
         h2 {
@@ -21,25 +24,33 @@
             margin-bottom: 10mm;
         }
 
-        table {
-            border-collapse: collapse;
+        .table-wrapper {
             width: 100%;
-            max-width: 190mm;
-            margin: 0 auto;
+            overflow: hidden;
+            border: 0.026mm solid black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
             table-layout: fixed;
+            margin: 0 auto;
+            margin-bottom: 15mm;
+            border: 0.026mm solid black;
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 4px 6px;
+            border: 0.026mm solid black;
+            padding: 0.6mm;
             text-align: left;
             vertical-align: top;
             word-wrap: break-word;
         }
 
         th {
-            background-color: #f0f0f0;
             font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
         }
 
         .text-right {

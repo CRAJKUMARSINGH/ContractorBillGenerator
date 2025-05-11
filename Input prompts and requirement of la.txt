@@ -25,6 +25,60 @@ the error now is>>>>>>
 
 http://127.0.0.1:9999
 
+Fix core functionality tests first
+Then fix edge case tests
+Finally, fix performance and integration tests
+
+
+if you have examined the app file you must have clearly understood that no datas of 
+first 19 rows of Work Order and Bill Quantity sheet are to be used in bill processing>>
+>>>and nothin of first 5 rows of extra items sheet is usable>>>
+>>without clear understanding of the program why are u wasting time????
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 I HAVE ADDED 4 TESTED FILES>>>>PLEASE DEBUG BY RUNNING ALL ONE BY ONE WITH UR ASSUMTIVE INPUT VARIABLES
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+please recheck the code professionally>>>instead of a nascent coder using trial and error>>>>
+
+run the Streamlit app to test the changes:
+
+
+test run with input files in test_files folder>>>>assume other variable suitably by your assumption and prudence >>
+>>> update the code as required >>>>certificate_iii need to be a beautifully tabled as earlier in pdf as well as document>>
+make Generate Bill and Browse files button beatutifully colored
+
+
+
+please check the output pdf file in folder bill_output>>>>>>REQUIREMENT 1. the pdf file page pertaining deviation statement has very wide right margin 75 mm please shrink it to 15 mm >>>>>REQUIREMENT 2. the first page pdf right margin is 65 mm please shrink it to 15 mm REQUIREMENT 3.CAU U REPLACE THE USE OF LAST PAGE WITH 2 TEMPLATES CERTIFICATE_II AND iii ADDED IN TEMPLATES FOLDER RIGHT NOW? INITIALLY KEEP BOTH FORMPATS PLEASE
+
+*************************************************
+Now proceed, with
+CHECK IF U ALREADY HAVE TEST FILE???
+Run the tests to verify the core functionality
+Add more test cases for different scenarios
+Test with the other Excel files in the test_files directory
+*************************************************
+
+
+please see rate unit.png image file>>>>it is screenshot of the output>>> where there is unit cell and rate cell both are blank in input excel file>>>
+>>in that row no unwanted zeroes should appear in>>>>quantity, rate and amount column of first page as well as in deviation>>
+>>>please update all relevant segments of code/ files
+
+
+
+
+
+all outputs are not as per my requirement>>>>> please go through the file>>
+>>Sample_output_required\BILL_AND_DEVIATION_20250430.pdf >>>>> and kindly update everything required>>>>please work hard
+
+test using four input files in test_files folder>>>>>modify the code to run it effectively if required>>>>I ACCEPT ALL MODIFICATUIONS IN YES>>>>>SO DONT WAIT FOR MY RESPONSE PLEASE>>>
+make Generate Bill and Browse files button beatutifully colored
+
+
+please look the version2 certificate_ii.pdf file shared now >>>>>the certificate table shud look like this
+
+
+
+
+

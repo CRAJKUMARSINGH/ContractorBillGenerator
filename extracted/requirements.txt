@@ -1,0 +1,11 @@
+# requirements.txt
+streamlit
+pandas==2.0.3  # Example version, adjust as needed
+openpyxl
+pdfkit
+python-docx
+num2words
+jinja2
+pypdf
+numpy==1.26.4  # Example version, adjust as needed
+# Note: wkhtmltopdf is a system dependency and must be installed separately

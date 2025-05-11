@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Memorandum of Payments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+            margin: 10mm;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 10pt;
+            margin-bottom: 10mm;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 190mm;
+            margin: 0 auto;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4px 6px;
+            text-align: left;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .small-text {
+            font-size: 7pt;
+        }
+
+        .indent {
+            padding-left: 1cm;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .top-align {
+            vertical-align: top;
+        }
+
+        .amount-col {
+            width: 30mm;
+        }
+
+        .label-col {
+            width: 10mm;
+        }
+
+        table tr td:nth-child(1) {
+            width: 8mm;
+        }
+
+        table tr td:nth-child(6) {
+            width: 8mm;
+        }
+
+        table tr td:nth-child(2),
+        table tr td:nth-child(3),
+        table tr td:nth-child(4),
+        table tr td:nth-child(5),
+        table tr td:nth-child(7) {
+            width: auto;
+        }
+
+        .hr-below-pay, .hr-below-received {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .full-width-hr {
+            border-bottom: 2px solid black;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            width: 100%;
+            display: block;
+        }
+
+        .bold-border-top {
+            border-top: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h2>III. MEMORANDUM OF PAYMENTS</h2>
+
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <th class="amount-col">Amount Rs.</th>
+        </tr>
+        <tr>
+            <td>1.</td>
+            <td colspan="4">Total value of work actually measured, as per Account I, Col. 5, Entry [A]</td>
+            <td>[A]</td>
+            <td class="text-right">{{ data.payable_amount }}</td>
+        </tr>
+        <tr>
+            <td>2.</td>
+            <td colspan="6">Total up-to-date advance payments for work not yet measured as per details given below:</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="indent" colspan="4">(a) Total as per previous bill</td>
+            <td>[B]</td>
+            <td class="text-right">Nil.</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="indent" colspan="4">(b) Since previous bill...............as per page ........of M.B. No. ..........</td>
+            <td>[D]</td>
+            <td class="text-right">Nil.</td>
+        </tr>
+        <tr>
+            <td>3.</td>
+            <td colspan="4">Total up-to-date secured advances on security of materials as per Annexure (Form 26-A) Col. 8 Entry</td>
+            <td>[C]</td>
+            <td class="text-right">Nil.</td>
+        </tr>
+        <tr>
+            <td>4.</td>
+            <td colspan="5">Total (Items 1 + 2 + 3) A+B+C</td>
+            <td class="text-right">{{ data.total_123 }}</td>
+        </tr>
+        <tr>
+            <th colspan="3">Figures for works abstract</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>5.</td>
+            <td colspan="3">Deduct: Amount withheld</td>
+            <th>Amount Rs.</th>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="3">(a) From previous bill as per last Running Account Bill</td>
+            <td>Nil</td>
+            <td>[5]</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="3">(b) From this bill</td>
+            <td>Nil</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>6.</td>
+            <td colspan="5">Balance i.e. "up-to-date" payments (Item 4-5) = Total - Deductions</td>
+            <td class="text-right">{{ data.balance_4_minus_5 }}</td>
+        </tr>
+        <tr>
+            <td>7.</td>
+            <td colspan="4">Total amount of payments already made as per Entry (K), of last Running Account Bill No. .......................... of ................................
+                forwarded with account for .............................20</td>
+            <th>(K)</th>
+            <td class="text-right">{{ data.amount_paid_last_bill }}</td>
+        </tr>
+        <tr>
+            <td>8.</td>
+            <td colspan="5">Payments now to be made, as detailed below:</td>
+            <td class="text-right">{{ data.payment_now }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="4">(a) By recovery of amounts creditable to this work</td>
+            <td>[a]</td>
+            <td></td>
+        </tr>
+        {% for item in data.certificate_items %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{ item.name }} @ {{ item.percentage }}%</td>
+            <td class="text-right">{{ item.value }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Total recovery of amounts creditable to this work</td>
+            <td></td>
+            <td class="text-right">{{ data.total_recovery }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Total 5(b) + 8(a)</td>
+            <td></td>
+            <td class="text-right">{{ data.total_recovery }}</td>
+            <td>[G]</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td colspan="3">(b) By recovery of amount creditable to other works or heads of account</td>
+            <td>[b]</td>
+            <td class="text-right">Nil.</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td colspan="3">(c) By cheque</td>
+            <td></td>
+            <td class="text-right">{{ data.by_cheque }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td colspan="3">Total 8(b) + 8(c)</td>
+            <td>[H]</td>
+            <td class="text-right">{{ data.by_cheque }}</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="no-border bold-border-top">
+                <div class="full-width-hr"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" class="no-border hr-below-pay">
+                Pay Rs. {{ data.by_cheque }}
+                <p>Pay Rupees {{ data.cheque_amount_words }} (by cheque)</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="half-width no-border">Dated the <input type="text" size="5"> 20 <input type="text" size="5"></td>
+            <td colspan="4" class="half-width text-right no-border">Dated initials of Disbursing Officer</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="no-border">
+                <div class="full-width-hr"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" class="no-border hr-below-received">
+                <p>Received Rupees {{ data.cheque_amount_words }} (by cheque) as per above memorandum, on account of this bill</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="half-width no-border"></td>
+            <td colspan="4" class="half-width text-right no-border">Signature of Contractor</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="no-border">
+                <div class="full-width-hr"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="half-width no-border">Paid by me, vide cheque No. <input type="text" size="10"> dated <input type="text" size="5"> 20 <input type="text" size="5"></td>
+            <td colspan="4" class="half-width no-border"></td>
+        </tr>
+        <tr>
+            <td colspan="7" class="text-right no-border">Dated initials of person actually making the payment</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="no-border">
+                <div class="full-width-hr"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" class="small-text no-border">
+                + This figure should be tested to see that it agrees with the total of items 7 and 8 <br>
+                ++ If the net amount to be paid is less than Rs. 10 and it cannot be included in a cheque the payment should be made in cash, this entry being altered suitably and the alteration attested by initials. <br>
+                +++ Here specify the net amount payable, vide item 8(c) <br>
+                The payee's acknowledgement should be for the gross amount paid as per item 8 (i.e. a+b+c). <br>
+                Payment should be attested by some known person when the payee's acknowledgement is given by a mark, seal or thumb impression.
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

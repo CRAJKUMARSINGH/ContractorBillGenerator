@@ -4,16 +4,61 @@
     <meta charset="UTF-8">
     <title>CONTRACTOR BILL</title>
     <style>
-        body { font-family: Calibri, sans-serif; font-size: 9pt; margin: 0; }
-        .container { width: 180mm; min-height: 287mm; margin: 10mm 15mm; padding: 0; box-sizing: border-box; }
-        table { width: 100%; max-width: 180mm; border-collapse: collapse; table-layout: fixed; }
-        th, td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: top; overflow: hidden; }
-        .header { text-align: left; margin-bottom: 10px; }
-        .header p { margin: 2px 0; }
-        .bold { font-weight: bold; }
-        .underline { text-decoration: underline; }
-        .divider { font-weight: bold; text-decoration: underline; }
-        .center-align { text-align: center; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+        }
+        .container {
+            margin: 14mm 14mm 10mm 14mm;
+            width: 182mm;
+            min-height: 287mm;
+            box-sizing: border-box;
+        }
+        .header {
+            text-align: left;
+            margin-bottom: 10mm;
+        }
+        .header p {
+            margin: 2mm 0;
+        }
+        .table-wrapper {
+            width: 100%;
+            overflow: hidden;
+            border: 0.026mm solid black;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: 0 auto;
+            margin-bottom: 15mm;
+            border: 0.026mm solid black;
+        }
+        th, td {
+            border: 0.026mm solid black;
+            padding: 0.6mm;
+            font-size: 8pt;
+            vertical-align: top;
+            height: 18mm;
+        }
+        th {
+            font-size: 7pt;
+            text-align: center;
+            vertical-align: middle;
+            height: 15mm;
+        }
+        .description {
+            text-align: justify;
+            overflow-wrap: break-word;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .underline {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -37,38 +82,50 @@
                 {% endif %}
             {% endfor %}
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th width="10.10mm">Unit</th>
-                    <th width="13.81mm">Quantity executed (or supplied) since last certificate</th>
-                    <th width="13.81mm">Quantity executed (or supplied) upto date as per MB</th>
-                    <th width="9.58mm">Item No.</th>
-                    <th width="64.06mm">Item of Work supplies (Grouped under "sub-head" and "sub work" of estimate)</th>
-                    <th width="13.21mm">Rate</th>
-                    <th width="19.60mm">Amount upto date</th>
-                    <th width="15.20mm">Amount Since previous bill (Total for each sub-head)</th>
-                    <th width="12.00mm">Remark</th>              
-                </tr>
-            </thead>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10.06mm;">Unit</th>
+                        <th style="width: 13.76mm;">Quantity executed (or supplied) since last certificate</th>
+                        <th style="width: 13.76mm;">Quantity executed (or supplied) upto date as per MB</th>
+                        <th style="width: 9.55mm;">Item No.</th>
+                        <th style="width: 63.83mm;">Item of Work supplies (Grouped under "sub-head" and "sub work" of estimate)</th>
+                        <th style="width: 13.16mm;">Rate</th>
+                        <th style="width: 19.53mm;">Amount upto date</th>
+                        <th style="width: 15.15mm;">Amount Since previous bill (Total for each sub-head)</th>
+                        <th style="width: 11.96mm;">Remark</th>
+                    </tr>
+                    <tr>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                    </tr>
+                </thead>
             <tbody>
-                {% if data.items %}                    
-                    {% for item in data['items'] %}
+                {% if items %}                    
+                    {% for item in items %}
                         {% if item.is_divider %}
                             <tr>
                                 <td colspan="9" class="divider">{{ item.description }}</td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td>{{ item.unit | default("") }}</td>
-                                <td>{{ item.quantity_since_last if item.quantity_since_last|trim else "" }}</td>
-                                <td>{{ item.quantity_upto_date if item.quantity_upto_date|trim else item.quantity if item.quantity|trim else "" }}</td>
-                                <td>{{ item.serial_no | default("") }}</td>
-                                <td class="{% if item.bold %}bold{% endif %} {% if item.underline %}underline{% endif %}">{{ item.description | default("") }}</td>
-                                <td>{{ item.rate | int if item.rate|trim else "" }}</td>
-                                <td>{{ item.amount | int if item.amount|trim else "" }}</td>
-                                <td>{{ item.amount_previous | int if item.amount_previous|trim else "" }}</td>
-                                <td>{{ item.remark | default("") }}</td>
+                                <td style="width: 10.06mm;">{{ item.unit | default("") }}</td>
+                                <td style="width: 13.76mm;">{{ item.quantity_since_last if item.quantity_since_last|trim else "" }}</td>
+                                <td style="width: 13.76mm;">{{ item.quantity_upto_date if item.quantity_upto_date|trim else item.quantity if item.quantity|trim else "" }}</td>
+                                <td style="width: 9.55mm;">{{ item.serial_no | default("") }}</td>
+                                <td class="description" style="width: 63.83mm;{% if item.bold %} font-weight: bold;{% endif %} {% if item.underline %} text-decoration: underline;{% endif %}">{{ item.description | default("") }}</td>
+                                <td style="width: 13.16mm;">{{ item.rate | int if item.rate|trim else "" }}</td>
+                                <td style="width: 19.53mm;">{{ item.amount | int if item.amount|trim else "" }}</td>
+                                <td style="width: 15.15mm;">{{ item.amount_previous | int if item.amount_previous|trim else "" }}</td>
+                                <td style="width: 11.96mm;">{{ item.remark | default("") }}</td>
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -81,7 +138,7 @@
                     <td colspan="4"></td>
                     <td>Grand Total</td>
                     <td></td>
-                    <td>{{ data.totals.grand_total | int if data.totals.grand_total is not none else "" }}</td>
+                    <td>{{ totals.grand_total | int if totals.grand_total is not none else "" }}</td>
                     <td></td>
                     <td></td>
                 </tr>
